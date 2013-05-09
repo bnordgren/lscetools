@@ -1,0 +1,1070 @@
+
+#****************************************************************************************
+#                         Liste des parametres de ORCHIDEE
+#****************************************************************************************
+
+#****************************************************************************************
+# Gestion des affichages au cours du run de ORCHIDEE
+#****************************************************************************************
+
+# Niveau de 'bavardage' du modele (plus le chiffre est grand plus le modele est bavard)
+BAVARD = 0
+
+# Flag pour les informations de debuggage
+#  Cette option permet d'afficher les informations de debuggage sans recompiler le code.
+DEBUG_INFO = n
+
+# ORCHIDEE imprimera plus de messages.
+#  Il permet d'afficher beaucoup plus de messages sur le deroulement du programme.
+LONGPRINT = n
+
+#----------------------------------------------------------------------------------------
+
+# Les sorties doivent-elles respecter la convention ALMA ?
+#  Si cette option est activee, les sorties du modeles respecteront la convention du projet
+#  ALMA. C'est recommande pour ecrire des donnee en sortie d'ORCHIDEE.
+# ALMA_OUTPUT = y
+ALMA_OUTPUT = n
+
+# Surchage de la variable de temps indiquee dans le forcage de SECHIBA
+#  Cette option permet d'utiliser le temps de redemarrage indique par le GCM
+#  et non pas celui donne dans le fichier de restart de SECHIBA.
+#  Ce drapeau permet de boucler plusieurs fois sur la meme annee
+
+
+#****************************************************************************************
+# Fichiers d'entree / forcages / restart /outputs
+#****************************************************************************************
+# Fichiers divers :
+#---------------------------------------------------------------------
+
+# Nom du fichier de vegetation
+#   Le nom du fichier de la carte de vegetation (en pft) doit etre indique ici.
+#  C'est le nom du fichier ouvert pour la lecture de la carte de vegetation.
+#  Habituelleemnt, SECHIBA tourne avec une carte 5km x 5km qui vient de celle de IGBP.
+#  On suppose que l'on a une classification de 87 types de vegetation.
+#  C'est celle de Olson modifiee par Viovy.
+VEGETATION_FILE = /home/bnordgren/orchidee_data/USDATA/carteveg5km.nc
+
+# Nom du fichier de l'albedo sur sol nu.
+#  Si !IMPOSE_AZE
+#  Ce fichier sert a la lecture des types de sol desquels on tire les albedos sur sol nu.
+#  Ce fichier est precis au 1x1 degres et base sur les couleurs de sol definies par Wilson
+#  et Henderson.
+SOILCLASS_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
+
+
+# Nom du fichier de types de sol
+#  C'est le nom du fichier ouvert pour le lecture des types de sol. Les donnees de ce
+#  fichier seront interpollees sur la grille du modele. Le but est d'obtenir les fractions
+#  de 'sand loam' et de 'clay' pour chaque boite de la grille. Cette information est utilisee
+#  pour l'hydrologie du sol et la respiration.
+SOILALB_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
+
+
+# Nom du fichier de reference de temperature
+#  Ce fichier sert a lire la temperature de reference de la surface. Les donnees sont interpollees
+#  sur la grille du modele. Le but est d'obtenir une temperature aussi bien pour initialiser
+#  les variables de pronostique correspondantes du modele correctement (ok_dgvm = TRUE), que 
+#  de l'imposer comme une condition aux limite (ok_dgvm = FALSE).
+#REFTEMP_FILE = /home/data02/cbacour/ORCHIDEE/forcage/reftemp.nc
+REFTEMP_FILE = /home/bnordgren/orchidee_data/USDATA/reftemp.nc
+
+# Nom du fichier de forcage
+#  Permet de lire les donnees pour le modele dim0. Le format de ce fichier est compatible avec
+#  les normes NetCDF et COADS. Cabauw.nc, islscp_for.nc, WG_cru.nc, islscp2_for_1982.nc
+
+
+# Lecture et ecriture des fichiers de restart du driver
+#----------------------------------------------------------------------------------------
+
+# Nom du fichier de forcage pour les conditions initiales.
+#  Ce fichier sera ouvert par le lanceur pour extraire les donnees en entree du modele.
+#  Ce fichier doit etre compatible avec la norme NetCDF, mais peut ne pas l'etre completement
+#  avec la norme COADS. NONE signifie qu'aucun fichier de forcage n'est lu.
+
+
+# Nom du fichier de restart qui sera cree par le lanceur
+
+
+# Lecture et ecriture des fichiers de restart de SECHIBA :
+#----------------------------------------------------------------------------------------
+
+# Nom des conditions initiales de redemarrage pour SECHIBA
+#  C'est le nom du fichier qui est ouvert pour recuperer les valeurs
+#  initiales de toutes les variables en entree de SECHIBA.
+
+
+# Nom du fichier de restart cree par SECHIBA
+#  C'est le nom du fichier qui est cree pour ecrire en sortie de SECHIBA
+#  les valeurs initiales de toutes les variables en entree de SECHIBA. 
+
+
+# Lecture et ecriture des fichiers de restart de STOMATE :
+#----------------------------------------------------------------------------------------
+
+# Nom du fichier de restart pour LIRE les conditions initiales de STOMATE
+#  C'est le nom du fichier qui est ouvert pour recuperer les valeurs initiales de toutes
+#  les variables en entree de STOMATE.
+#  Rq : Si STOMATE_OK_STOMATE || STOMATE_WATCHOUT
+
+
+# Nom du fichier de restart cree par STOMATE
+#  C'est le nom du fichier qui est cree pour ecrire en sortie de STOMATE
+#  les valeurs initiales de toutes les variables en entree de STOMATE.
+#  Rq : Si STOMATE_OK_STOMATE || STOMATE_WATCHOUT
+
+
+
+# Lecture et ecriture des fichiers de restart de TESTSTOMATE et FORCESOIL 
+# (equilibrage du carbone dans le sol) :
+#----------------------------------------------------------------------------------------
+
+# Nom du fichier de forcage de STOMATE
+
+
+# Taille de la memoire de STOMATE (en MO)
+#  Cette taille determine combien de variables de forcage seront conservees en memoire. 
+#  Cela donne un compromis entre la memoire et la frequence des acces disque.
+
+# Modif pour forestry
+STOMATE_FORCING_MEMSIZE = 300  #avant modif : 50
+
+
+# Nom du fichier de forcage du carbone dans STOMATE
+#  Nom passe a STOMATE pour lire les donnees de carbone en entree
+
+
+
+# Ecriture des fichiers de forcage (SECHIBA puis STOMATE) :
+#----------------------------------------------------------------------------------------
+
+# ORCHIDEE ecrit ses forcages en sortie dans ce fichier.
+#  Ce drapeau impose l'ecriture d'un fichier (cf WATCHOUT_FILE)contenant les variables de
+#  forcage du terrain. 
+ORCHIDEE_WATCHOUT = y
+
+
+# Nom du fichier de forcage de ORCHIDEE (Si ORCHIDEE_WATCHOUT)
+#  Ce fichier a exactement le meme format qu'un fichier de forcage off-line
+WATCHOUT_FILE = watchout_meteo.nc
+
+
+# Le watchout est ecrit a cette frequence (Si ORCHIDEE_WATCHOUT)
+#  Indique la frequence d'ecriture du fichier watchout.
+DT_WATCHOUT = 1800 
+
+
+# STOMATE effectue un minimum de taches.
+# Avec cette option, STOMATE lit et ecrit ses fichiers de demarrage et conserve une
+#  sauvegarde des variables biometeorologiques. C'est utile lorsque STOMATE_OK_STOMATE
+#  est a no et que l'on desire activer STOMATE plus tard. Dans ce cas, ce premier calcul
+#  sert de constructeur de donnees biometeorologiques a long terme.
+STOMATE_WATCHOUT = n
+
+
+# Ecriture des fichiers d'outputs (SECHIBA puis STOMATE) :
+#----------------------------------------------------------------------------------------
+# Nom du fichier dans lequel sont ecrites les donnees historiques
+#  Ce fichier est cree par le modele pour sauver l'historique des sorties. Il respecte
+#  completement les convention COADS et NetCDF. Il est genere par le package hist de IOIPSL.
+
+
+# Nom du fichier histoire de STOMATE
+#  Le format de ce fichier est compatible avec les normes NetCDF et COADS. 
+
+
+# Niveaux d'ecriture sur les fichiers de sortie (nombre de variables) :
+#----------------------------------------------------------------------------------------
+
+# Niveau d'ecriture pour SECHIBA (0 - 10)
+#  Choisit la liste des variables ecrites dans le fichier histoire de SECHIBA.
+#  Les valeurs vont de 0 (rien n'est ecrit) a 10 (on ecrit tout).
+
+
+# Niveau des sorties historiques pour STOMATE (0 - 10)
+#  0: rien n'est ecrit; 10: tout est ecrit
+
+
+# Frequences d'ecriture des fichiers d'histoire (en secondes pour SECHIBA et en minutes
+# pour STOMATE
+#----------------------------------------------------------------------------------------
+
+# Frequence d'ecriture sur les fichiers de sortie (pour SECHIBA en secondes) :
+#  Cela ne modifie pas la frequence des operations sur les donnees (les moyennes par exemple).
+
+
+# Pas de temps des sauvegardes historiques de STOMATE (d)
+#  Pour STOMATE, c'est en jours
+#  Rq : Attention, cette variable doit etre plus grande que le DT_SLOW.
+
+
+
+# CO2 atmospherique
+# ---------------------------------------------------------------------------------------
+
+# Valeur du CO2 atmospherique
+ 
+# Fichier NetCDF de valeur pour le CO2 atmospherique.
+#  Si !=NONE, les valeurs seront lues dans ce fichier et varieront annuellement,
+
+# Annee de depart du vecteur des valeurs de CO2 atmospherique a lire dans le fichier
+# -1 par defaut => gestion automatique en fonction des annees de forcage meteorologique
+
+# C13
+ATM_C13 = -8.0
+ATM_C13_FILE = NONE #/home/users/apalayan/ORCHIDEE/forcage/forcage_C13__monthly_hun_cycle_2000.nc
+YEAR_ATMC13_START = 1901
+# C13
+
+#****************************************************************************************
+# Optimisation de certains parametres d'ORCHIDEE
+#****************************************************************************************
+
+# Active le module 'parametres optimisables' d'ORCHIDEE
+# (y | n)
+OPTIMIZATION_ORCHIDEE = n
+
+# Fichier NetCDF d'entree des parametres optimisables
+OPTIMIZATION_FILEIN_PARAS = NONE #outputspara_in.nc
+
+# Fichier NetCDF de sortie des parametres optimisables.
+# >>> Met fin a l'execution d'ORCHIDEE
+OPTIMIZATION_FILEOUT_PARAS = NONE
+
+# Fichier NetCDF de sortie des flux optimises (H,LE,Rn,CO2)
+OPTIMIZATION_FILEOUT_FLUXES = outputs/flux_meteo2006.nc
+
+# Les flux sont-ils contenus (y/n) dans le fichier de sortie (y par defaut) ?
+OPTIMIZATION_FILEOUT_NEE = n
+OPTIMIZATION_FILEOUT_NEET = y
+OPTIMIZATION_FILEOUT_QH = y
+OPTIMIZATION_FILEOUT_QLE = y
+OPTIMIZATION_FILEOUT_RN = y
+OPTIMIZATION_FILEOUT_FAPAR = y
+OPTIMIZATION_FILEOUT_FAPART = y
+
+#****************************************************************************************
+# Coordonnees du site
+#****************************************************************************************
+# Le modele utilisera la plus petite des regions entre celle-ci et celle donnee par le
+# fichier de forcage.
+
+# Limite Ouest de la region
+#  La limite Ouest de la region doit etre comprise en -180. et +180. degres.
+
+
+# Limite Est de la region
+#  La limite Est de la region doit etre comprise en -180. et +180. degres.
+
+
+# Limite Nord de la region
+#  La limite Nord de la region doit etre comprise en -90. et +90. degres.
+
+
+# Limite Sud de la region
+#  La limite Sud de la region doit etre comprise en -90. et +90. degres.
+
+
+##****************************************************************************************
+# Caracteristiques de la simulation
+#*****************************************************************************************
+
+# Methode de forcage
+#  Permet d'utiliser la methode dans laquelle le premier niveau de donnees atmospheriques
+#  n'est pas directement force par des observations, mais relaxe ces observations par une
+#  constante en temps.
+#  Pour le moment, la methode tend a trop lisser le cycle diurne et introduisent un decalage
+#  en temps. Une methode plus complete est necessaire.
+RELAXATION = n
+
+
+# Constante de temps pour la methode de relaxation.
+#  La constante de temps associee a la relaxation des donnees atmospheriques. Pour eviter
+#  trop de 'damping' la valeur doit etre superieure a 1000.0
+RELAX_A = 1000.0
+
+
+# Hauteur a laquelle T et Q sont mesures.
+#  Les variables atmospheriques (temperature et humidite specifique) sont mesurees au niveau
+#  d'une certaine hauteur. Cette hauteur est necessaire pour calculer correctement les coefficients
+#  de transfert turbulent. Regardez dans la description des donnees de forcage pour indiquer la
+#  valeur correcte.
+HEIGHT_LEV1 = 2.0
+
+
+# Hauteur a laquelle le vent est donne.
+#  Cette hauteur est necessaire pour calculer correctement les coefficients de transfert turbulent. 
+HEIGHT_LEVW = 10.0 
+
+
+# Generateur d'intemperies :
+#----------------------------------------------------------------------------------------
+
+# Generateur d'intermperies
+#  Cette option declanche le calcul de donnees d'intemperies si il n'y a pas assez de donnees
+#  dans le fichier de forcage par rapport a la resolution temporelle du modele.
+
+
+# Resolution Nord-Sud
+MERID_RES = 0.5 
+
+
+# Resolution Est-Ouest
+ZONAL_RES = 0.5 
+
+
+#  Si cette option vaut 1, on utilise les quantites moyennees par mois pour chaque jour, si il
+#  vaut 0, alors, on utilise un generateur de nombres aleatoire pour creer les donnees
+#  journalieres a partir des donnees mensuelles.
+IPPREC = 0 
+
+
+# Interpolation ou pas SI on a un decoupage superieur a 1
+#  Choisit si vous desirez une interpolation lineaire ou pas.
+NO_INTER = y
+INTER_LIN = n
+
+
+#  Si cette option est activee, les precipitations mensuelles obtenues avec le generateur aleatoire
+#  sont corrigees afin de preserver la valeur moyenne mensuelle. Dans ce cas, on a un nombre
+#  constant de jours de precipitations pour chacun des mois. La quantite de precipitations pour ces 
+#  jours est constante.
+WEATHGEN_PRECIP_EXACT = n
+
+
+# Frequence d'appel du generateur d'intemperies
+#  Cela determine le pas de temps (en secondes) entre deux appels du generateur d'intemperies.
+#  Il doit etre superieur au pas de temps de SECHIBA.
+DT_WEATHGEN = 1800. 
+
+
+# Conservation de la radiation nette pour le forcage.
+#  Lorsque l'interpolation (INTER_LIN = y) est utilisee, la radiation nette donnee par le
+#  forcage n'est pas conservee. Cela peut-etre evite en indiquant y pour cette option.
+#  Cette option n'est pas utilisee pour les short-wave si le pas de temps du forcage est superieur
+#  a une heure. Cela n'a plus de sens d'essayer de reconstruire un cycle diurne et en meme temps
+
+NETRAD_CONS = y 
+
+
+# Ecriture des resultats du generateur dans un fichier de forcage
+#  Cette option active la sauvegarde du temps genere dans un fichier de forcage. Cela fonctionne
+#  correctement en tant que fichier de restart et non comme condition initiale (dans ce cas, le
+#  premier pas de temps est legerement faux) 
+DUMP_WEATHER = y 
+
+
+# Nom du fichier de forcage des intemperies (si DUMP_WEATHER)
+DUMP_WEATHER_FILE = weather_dump.nc
+
+
+# Compression des donnees d'intemperies (si DUMP_WEATHER)
+#  Cette option active la sauvegarde du generatuer de temps uniquement pour les points
+#  de terre (mode gathered)
+DUMP_WEATHER_GATHERED = y 
+
+
+# -- Parametres orbitaux
+ECCENTRICITY = 0.016724 
+
+PERIHELIE = 102.04
+
+OBLIQUITY =  23.446
+
+
+
+# duree de la simulation :
+#----------------------------------------------------------------------------------------
+# Duree de la simulation en temps.
+#  Duree de la simulation. Par defaut, la duree complete du forcage. 
+#  Le FORMAT de ce temps peut etre :
+#  n  : pas de temps n dans le fichier de forcage.
+#  nS : n secondes apres le premier pas de temps dans le fichier
+#  nD : n jours apres le premier pas de temps
+#  nM : n mois apres le premier pas de temps (annees de 365 jours)
+#  nY : n annees apres le premier pas de temps (annees de 365 jours)
+#  or combinations :
+#  nYmM: n years and m month
+#  default = depend de la duree et du nombre de pas de temps indiques par le fichier de forcage.
+
+
+# division du pas de temps :
+#----------------------------------------------------------------------------------------
+
+# Decoupe le pas de temps donne par le forcage
+#  Cette valeur divise le pas de temps donne par le fichier de forcage. En principe,
+#  on peut l'utiliser pour des calculs en mode explicite mais il est fortement recommande
+#  de ne l'utiliser qu'en mode implicite pour que les forcage atmospheriques aient une
+#  evolution reguliere.
+# TANKUN note: change split_dt=time step/half hour
+
+# Les donnees de forcage meteo sont elles centrees ou non ?
+# Les champs meteo sont-ils fournis tous les dt ou bien tous les dt+dt/2 ?
+# defaut = n
+
+
+
+# Nombre de pas de temps pour le 'spinup' du carbone
+FORCESOIL_STEP_PER_YEAR = 12
+
+
+# Modif pour forestry ?
+FORCESOIL_NB_YEAR = 2 
+
+
+# Utilisation des precipitation (si TIME_SPLIT)
+#  Indique le nombre de fois ou l'on utilise les precipitations pendant le decoupage du
+#  pas de temps. C'est utilise uniquement lorsque le pas de temps est decoupe .
+#  Si on indique un nombre plus grand que TIME_SPLIT, il est mis a cette valeur.
+SPRED_PREC = 1
+
+
+
+
+# ***************************************************************************************
+# Flags a activer selon les cas :
+# ***************************************************************************************
+
+
+# STOMATE active
+STOMATE_OK_STOMATE = y 
+#Modif pour forestry ?
+STOMATE_OK_WATCHOUT=n
+
+
+# DGVM active
+# Active la vegetation dynamique
+STOMATE_OK_DGVM = n 
+
+
+# CO2 active
+# Active la photosynthese
+STOMATE_OK_CO2 = y
+
+
+# Index du point de grille des diagnostics on-line
+#  Donne la longitude et la latitude du point de terre dont l'indiceest donne par ce parametre.
+STOMATE_DIAGPT = 1
+
+
+# Constante de mortalite des arbres
+#  Si cette option est activee, une mortalite constante des arbres est
+#  imposee. Sinon, la mortalite est une fonction de la vigueur des arbres
+#  (comme dans le LPJ).
+
+#Modif pour forestry ?
+LPJ_GAP_CONST_MORT = y
+
+
+# Pas de feux
+#  Avec cette variable, on peut ou non estimer la quantite de CO2 produite par un feu.
+
+# Cycle du C13
+OK_C13 = y
+CHECK_CARBON_FORCING = y
+FORCING_C13_MONTHLY = y
+
+#****************************************************************************************
+# Parametres decrivant la surface (vegetation + sol) :
+#****************************************************************************************
+#
+# La vegetation doit-elle etre imposee ?
+#  Cette option permet d'imposer la distribution de la vegetation quand on travaille
+#  sur un seul point. Sur le globe, cela n'a pas de sens d'imposer la meme vegetation partout.
+# Modif pour forestry ???
+
+
+# A enlever du code !!! calcul impose par la lai (cf slowproc_veget) et veget_max
+#  Parametres prescrits pour la vegetation dans les cas 0-dim.
+#  Les fractions de vegetation (PFTs) sont lus dans le fichier de restart ou imposees
+#  par ces valeurs.
+#  Fraction de VEGET_MAX (parametre par la LAI donc).
+#  TANKUN note: choose PFT here
+SECHIBA_VEG__01 = 0.0
+SECHIBA_VEG__02 = 0.0 
+SECHIBA_VEG__03 = 0.0 
+SECHIBA_VEG__04 = 0.0 
+SECHIBA_VEG__05 = 0.0 
+SECHIBA_VEG__06 = 1.0 
+SECHIBA_VEG__07 = 0.0 
+SECHIBA_VEG__08 = 0.0 
+SECHIBA_VEG__09 = 0.0 
+SECHIBA_VEG__10 = 0.0 
+SECHIBA_VEG__11 = 0.0 
+SECHIBA_VEG__12 = 0.0 
+SECHIBA_VEG__13 = 0.0 
+
+
+#  Parametres prescrits pour la vegetation dans les cas 0-dim.
+#  Les fractions maximum de vegetation (PFTs) sont lus dans le fichier de restart 
+#  ou imposees par ces valeurs.
+#  TANKUN note: choose PFT here
+SECHIBA_VEGMAX__01 = 0.0
+SECHIBA_VEGMAX__02 = 0.0
+SECHIBA_VEGMAX__03 = 0.0
+SECHIBA_VEGMAX__04 = 0.0
+SECHIBA_VEGMAX__05 = 0.0
+SECHIBA_VEGMAX__06 = 1.0
+SECHIBA_VEGMAX__07 = 0.0
+SECHIBA_VEGMAX__08 = 0.0
+SECHIBA_VEGMAX__09 = 0.0
+SECHIBA_VEGMAX__10 = 0.0
+SECHIBA_VEGMAX__11 = 0.0
+SECHIBA_VEGMAX__12 = 0.0
+SECHIBA_VEGMAX__13 = 0.0
+
+
+#  C'est la LAI maximale utilisee dans les cas 0-D. Ces valeurs sont utilisees si elles
+#  ne sont pas dans le fichier de restart.
+#  Les nouvelles valeurs de la LAI sont quand meme calculees a la fin du premier jour.
+#  On a besoin de ces valeurs si le modele s'arrete avant la fin du jour et que l'on n'ait
+#  pas passe par les procedures calculant ces valeurs pour obtenir les nouvelles conditions
+#  de surface.
+SECHIBA_LAI__01 = 0
+SECHIBA_LAI__02 = 8
+SECHIBA_LAI__03 = 8
+SECHIBA_LAI__04 = 4
+SECHIBA_LAI__05 = 4.5
+SECHIBA_LAI__06 = 4.5
+SECHIBA_LAI__07 = 4
+SECHIBA_LAI__08 = 4.5
+SECHIBA_LAI__09 = 4
+SECHIBA_LAI__10 = 2
+SECHIBA_LAI__11 = 2
+SECHIBA_LAI__12 = 2
+SECHIBA_LAI__13 = 2
+
+
+#  C'est la hauteur utilisee dans les cas 0-D. Ces valeurs sont utilisees si elles ne sont
+#  pas dans le fichier de restart. Les nouvelles valeurs de la hauteur sont quand meme
+#  calculees a la fin du premier jour. On a besoin de ces valeurs si le modele s'arrete
+#  avant la fin du jour et que l'on n'ai pas passe par les procedures calculant ces valeurs
+#  pour obtenir les nouvelles conditions de surface.
+SLOWPROC_HEIGHT__01 = 0.
+SLOWPROC_HEIGHT__02 = 50.
+SLOWPROC_HEIGHT__03 = 50.
+SLOWPROC_HEIGHT__04 = 30.
+SLOWPROC_HEIGHT__05 = 30.
+SLOWPROC_HEIGHT__06 = 30.
+SLOWPROC_HEIGHT__07 = 20.
+SLOWPROC_HEIGHT__08 = 20.
+SLOWPROC_HEIGHT__09 = 20.
+SLOWPROC_HEIGHT__10 = .2
+SLOWPROC_HEIGHT__11 = .2
+SLOWPROC_HEIGHT__12 = .4
+SLOWPROC_HEIGHT__13 = .4
+
+
+#  Determine la fraction des 3 types de soldans le maillage selon l'ordre : sand loam and clay.
+SOIL_FRACTIONS__01 = 0.49 
+SOIL_FRACTIONS__02 = 0.29
+SOIL_FRACTIONS__03 = 0.22
+
+
+
+# Temperature utilisee pour l'initialisation de la LAI
+#  Si il n'y a pas de LAI dans le fichier de redemarrage, c'est cette temperature qui est
+#  utilisee pour la LAI initial.
+SLOWPROC_LAI_TEMPDIAG = 280.
+
+
+# Niveau de sol (en m) utilise pour les calculs de canopee (si STOMATE n'est pas active)
+#  La temperature a une profondeur du sol est utilisee pour determiner la LAI lorsque STOMATE n'est pas active.
+SECHIBA_ZCANOP = 0.5
+
+
+#  Indique la fraction de glace, lacs, etc... si elle n'est pas donnee dans le fichier de
+#  redemarrage. Pour l'instant, il n'y a que de la glace.
+#  Q :laisser ca tant qu'il n'y a que la glace. Pb avec setvar?????
+SECHIBA_FRAC_NOBIO = 0.0
+
+
+#  Determine la fraction de l'argile dans la case
+CLAY_FRACTION = 0.22
+
+
+# Les parametres de surface doivent etre donnes.
+# Cette option permet d'imposer les parametres de surface (albedo, rugosite, emission).
+# C'est surtout utilise pour les simulations sur un point. Sur le globe, cela n'a
+#  pas de sens d'imposer les memes parametres partout.
+IMPOSE_AZE = n
+
+
+# Emission des radiations grandes longueur d'ondes. (si IMPOSE_AZE)
+#  L'emissivite de surface sont utilisees pour calculer le flux de chaleur latente LE de
+#  la surface dans les calculs sur un point. Les valeurs doivent etre comprises entre
+#  0.97 et 1. Le GCM utilise 0.98.
+CONDVEG_EMIS = 1.0
+
+
+# Albedo de surface dans le domaine visible. (si IMPOSE_AZE)
+#  Utile pour les tests sur un point de maille.
+#  Regarder dans un fichier de forcage pour imposer une valeur correcte.
+CONDVEG_ALBVIS = 0.25
+
+
+# Albedo de surface dans le domaine proche infrarouge. (si IMPOSE_AZE)
+#  Utile pour les tests sur un point de maille.
+#  Regarder dans un fichier de forcage pour imposer une valeur correcte.
+CONDVEG_ALBNIR = 0.25
+
+
+# Methode de moyennage pour la rugosite de surface z0
+#  Si ce flag est place a 'y', alors le __Cdrag neutre__?? est moyenne plutot que le log(z0).
+#  Il est preferable d'utiliser cette premiere methode. 
+Z0CDRAG_AVE = y
+
+
+# Rugosite de surface z0 (m) (si IMPOSE_AZE)
+#  Rugosite de surface pour les tests sur un point. 
+#  Regarder dans un fichier de forcage pour imposer une valeur correcte.
+CONDVEG_Z0 = 0.15
+
+
+# Hauteur a ajouter a la hauteur du premier niveau (en m) (si IMPOSE_AZE)
+#  ORCHIDEE suppose que la hauteur du niveau atmospherique est egale au niveau 0 du vent.
+#  Aussi, pour prendre en compte la rugosite due a la vegetation, on doit la corriger par
+#  une fraction de la hauteur de vegetation. On l'appelle hauteur de rugosite.
+ROUGHHEIGHT = 0.0
+
+
+
+
+# Hydrologie
+# --------------------------------------------------------------------------------------
+# Masse de neige initiale si pas dans le fichier de redemarrage.
+#  La valeur initiale de la masse de neige lorsque l'on a pas de fichier de restart.
+HYDROL_SNOW = 0.0
+
+
+# L'age de la neige initiale si pas dans le fichier de redemarrage.
+#  La valeur initiale de l'age de la neige lorsque l'on a pas de fichier de restart.
+HYDROL_SNOWAGE = 0.0
+
+# Ajout pour forestry ?
+HYDROL_HDRY=0.0
+
+
+# Le taux de neige initiale sur la glace, les lacs, etc ...
+#  La valeur initiale du taux de neige sur la glace, les lacs lorsque l'on a pas de
+#  fichier de restart.
+HYDROL_SNOW_NOBIO = 0.0
+
+
+# L'age de la neige initiale sur la glace, les lacs ...
+# La valeur initiale de l'age de la neige sur la glace, les lacs, lorsque l'on a pas
+# de fichier de restart.
+HYDROL_SNOW_NOBIO_AGE = 0.0
+
+
+# Contrainte d'humidite initiale du sol
+#  C'est la valeur initiale de la contrainte d'humidite du sol si elle n'est pas dans
+#  le fichier de redemarrage.
+HYDROL_HUMR = 1.0
+
+
+# Humidite initiale profonde du sol
+#  C'est la valeur initiale de l'humidite profonde du solsi elle n'est pas dans le fichier
+#  de redemarrage. La valeur par defaut est le sol sature.
+#  defaut = Maximum quantity of water (Kg/M3) * Total depth of soil reservoir = 150. * 2
+HYDROL_BQSB = default 
+
+
+# Humidite initiale superficielle du sol
+#  C'est la valeur initiale de l'humidite superficielle du sol si elle n'est pas dans le
+#  fichier de redemarrage.
+HYDROL_GQSB =  0.0
+
+
+# Profondeur initiale du reservoir superficiel
+#  C'est la valeur initiale de la profondeur du reservoir superficiel si elle n'est pas
+#  dans le fichier de redemarrage.
+HYDROL_DSG = 0.0
+
+
+# Assechement initial au dessus du reservoir superficiel
+# C'est la valeur initiale de l'assechement au dessus du reservoir superficiel si elle n'est
+# pas dans le fichier de redemarrage. La valeur par defaut est calculee d'apres les
+# grandeurs precedentes. Elle devrait etre correcte dans la plupart des cas.
+# defaut = Total depth of soil reservoir - HYDROL_BQSB / Maximum quantity of water (Kg/M3) = 0.0
+HYDROL_DSP = default
+
+
+# Quantite initiale de l'eau dans la canopee si elle n'est pas dans le fichier de redemarrage.
+HYDROL_QSV = 0.0
+
+
+# Humidite du sol sur chaque carreau et niveau
+#  La valeur initiale de mc si elle n'est pas dans le fichier de redemarrage.
+HYDROL_MOISTURE_CONTENT = 0.3
+
+
+# US_NVM_NSTM_NSLM
+#  La valeur initiale de l'humidite relative si elle n'est pas dans le fichier de redemarrage.
+US_INIT = 0.0
+
+
+# Coefficients du drainage libre en sous-sol
+#  Indique les valeurs des coefficients du drainage libre.
+FREE_DRAIN_COEF = 1.0, 1.0, 1.0
+
+
+# Evaporation sur sol brut pour chaque sol si elle n'est pas dans le fichier de redemarrage.
+EVAPNU_SOIL = 0.0
+
+
+# Temperature de surface initiale si elle n'est pas dans le fichier de redemarrage.
+ENERBIL_TSURF = 280.
+
+
+# Potentiel initial d'evaporation du sol si elle n'est pas dans le fichier de redemarrage.
+ENERBIL_EVAPOT = 0.0
+
+
+# Profil initial de temperature du sol si il n'est pas dans le restart
+#  La valeur initiale du profil de temperarure du sol. Cela ne devrait etre utilise qu'en
+#  cas de redemarrage du modele. On ne prend qu'une valeur ici car on suppose la
+#  temperature constante le long de la colone.
+THERMOSOIL_TPRO = 280.
+
+
+# Niveau initial du CO2 dans les feuilles si il n'est pas dans le fichier de redemarrage.
+DIFFUCO_LEAFCI = 233.
+
+
+# Permet l'utilisation du modele hydrologique multi-couches de Patricia De Rosnay
+#  Cette option declanche l'utilisation du modeles 11 couches pour l'hydrologie verticale.
+#  Cette modelisation utilise une diffusion verticale adapte de CWRR de Patricia De Rosnay.
+#  Sinon, on utilise l'hydrologie standard dite de Choisnel.
+
+
+# Faire de la diffusion horizontale ?
+#  Si TRUE, alors l'eau peut diffuser dans les directions horizontales en les reservoirs d'eau des PFT.
+#Modif pour forestry ?
+HYDROL_OK_HDIFF = y
+
+
+# Temps de latence (en s) pour la diffusion horizontale de l'eau (si HYDROL_OK_HDIFF)
+#  Definit la vitesse de diffusion horizontale entre chaque reservoirs d'eau des PFT. Une valeur
+#  infinie indique que l'on a pas de diffusion.
+HYDROL_TAU_HDIFF = 86400.
+
+
+# Option pour la transmission des rivieres
+#  Cette option declanche l'ecoulement et le drainage de l'eau jusqu'aux oceans et vers
+#  les 'downstream grid boxes' 
+RIVER_ROUTING = n
+
+
+# Nom du fichier qui contient les informations de routage.
+#  Le fichier permet au module du routage de lire les grilles a resolution haute frequence des bassins
+#  et les directions d'ecoulement d'un maillage a l'autre.
+ROUTING_FILE = routing.nc 
+
+
+# Pas de temps du routage (si RIVER_ROUTING)
+#  Indique le pas de temps en secondes pour le schema de routage. Ce nombre doit etre un mutliple
+#  du pas de temps d'ORCHIDEE. Un jour est une bonne valeur.
+ROUTING_TIMESTEP = 86400
+
+
+# Nombre de rivieres (si RIVER_ROUTING)
+#  Ce parametre donne le nombre de rivieres dans les grands bassins. Ces rivieres seront traites
+#  separement et ne diffuseront pas ensembles vers les cotes et les oceans.
+ROUTING_RIVERS = 50
+
+
+# Doit-on calculer les flux d'irrigation ?
+#  En cas de routage, on calcule les flux d'irrigation. C'est fait avec une hypothese simple :
+#  on souhaite avoir une carte correcte des zones d'irrigation et on a une fonction simple qui
+#  estime les besoins en irrigation.
+DO_IRRIGATION = n
+
+
+# Nom du fichier qui contient la carte des zones irriguees. (si IRRIGATE)
+#  Le nom du fichier qui est ouvert pour lire un champ avec une zone en m^2 des zones irriguees
+#  a l'interieur de chaque maille 0.5 par 0.5 degres de la grille. La carte courrante est celle
+#  utilisee par le 'Center for Environmental Systems Research' in Kassel (1995).
+IRRIGATION_FILE = irrigated.nc
+
+
+# Doit-on calculer les inondations en plaine ?
+#  Ce flag force le modele a tenir compte des inondations en plaine and la conversion de l'eau
+#  des surfaces inondees en humidite de sol, qui peut ensuite retourner dans l'atmosphere.
+#  Permet de representer les deltas, les rivieres, etc.
+DO_FLOODPLAINS = n 
+
+
+# Conservation du cdrag du gcm.
+#  Placer ce parametre a .TRUE. si vous desirez conserver le q_cdrag calcule par le GCM.
+#  Conservation du coefficient cdrag du gcm pour le calcul des flux de chaleur latent et sensible..
+#  TRUE si q_cdrag vaut zero a l'initialisation (et FALSE pour les calculs off-line).
+#  defaut = SI q_cdrag == 0 ldq_cdrag_from_gcm = .FALSE. SINON .TRUE.
+CDRAG_FROM_GCM = n
+
+
+# Bouton articificiel pour regler la croissance ou decroissance de la resistance de la canopee.
+# Ajout de Nathalie - 28 Mars 2006 - sur les conseils de Frederic Hourdin.
+RVEG_CSTE = 1
+
+
+# Modif pour forestry ?
+NOx RAIN PULSE=true
+NOx BBG FERTIL=true
+NOx FERTILIZERS USE=true
+
+TESTSTOMATE_NB_YEAR=2
+
+
+
+
+
+
+
+
+#****************************************************************************************
+# LAI
+#****************************************************************************************
+
+# Lecture de la carte de LAI
+#  Si n => modele impose entre LAI_min et LAI_max, suivant le tableau type_of_lai
+#  (dans constantes_veg.f90)
+#   - mean  : lai(ji,jv) = undemi * (llaimax(jv) + llaimin(jv))
+#   - inter  : llaimin(jv) + tempfunc(stempdiag(ji,lcanop)) * (llaimax(jv) - llaimin(jv))
+#  la carte n'est pas lue si un seul point ??
+LAI_MAP = n
+
+
+# Nom du fichier de LAI (si LAI_MAP)
+#  C'est le nom du fichier ouvert pour la lecture de la carte de LAI. Habituelleemnt, SECHIBA
+#  tourne avec une carte 5km x 5km qui vient de celle de Nicolas Viovy.
+LAI_FILE = lai2D.nc 
+
+
+
+#****************************************************************************************
+#****************************************************************************************
+
+# Lecture d'une carte de vegetation pour le land_use
+#  On modifie les proportions des differentes pft
+
+
+#  Decalage en annee de la lecture de la carte de land_use
+
+
+# Frequence de mise a jour de la carte de vegetation 
+#  Les donnees veget seront mises a jour avec ce pas de temp
+VEGET_LENGTH = 1Y
+
+
+#  Prend en compte les modifications dues a l'utilisation des sols, notamment l'impact de la deforestation.     
+LAND_COVER_CHANGE = n
+
+
+
+#----------------------------------------------------------------------------------------
+
+# Calcule-t-on l'agriculture ?
+AGRICULTURE = y
+
+
+# Modelise-t-on les herbivores ?
+#  Cette option declanche la modelisation des effets des herbivores.
+HERBIVORES = n 
+
+
+# L'expansion des PFTs peut-elle depasser d'une maille ?
+#  L'activation de cette option autorise les expansions des PFTs a traverser les mailles.
+TREAT_EXPANSION = n
+
+
+#Calcul de la récolte type shi long
+
+#****************************************************************************************
+
+# Compteur de jour de simulation
+#  Cette variable est utilisee par les processus a calculer une seule fois par jour.
+SECHIBA_DAY = 0.0 
+
+# Pas de temps de STOMATE et des autres processus lents
+#  Pas de temps (en s) de la mise a jour de la couverture de vegetation, du LAI, etc.
+#  C'est aussi le pas de temps de STOMATE
+DT_SLOW = 86400. 
+
+
+
+#****************************************************************************************
+# Nitrogen settings
+#****************************************************************************************
+# nitrogen deposition
+STOMATE_NCYCLE_ACTIVE = n
+STOMATE_NCYCLE_DYNAMIC = n
+STOMATE_NCYCLE_FEEDBACK = n
+STOMATE_GOES_CEXCHANGE = n
+
+#  Use deposition data from an atmospheric chemistry model?
+OFFLINE_NDEP = n
+
+# nitrogen deposition
+#  Deposition file, containing nhx_depa,wdepa and ddepa
+#  if not, specify nitrogen deposition [kgN/ha/yr] here (overwritten if OFFLINE_NDEP)
+NDEP_FILE = NONE
+DEPOSITION_NHX = 5.
+DEPOSITION_NOX = 5.
+
+# Full century and fixed biomass C/N ratios
+#  nitrogen allocation to tissue pools dynamic
+#  actual leaf nitrogen to be used for photosynthesis
+#  gs and agcan from Friend and Kiang, 2005
+
+
+# biological nitrogen fixation [kgN/ha/yr]
+BN_FIXATION = 7.
+
+# fertiliser application in agriculture (only used if AGRICULTURE!)
+# set to none to specify input [kgN/ha/yr] here:
+NFERTIL_FILE = NONE
+NFERTIL_APPL = 200.
+
+# soil pH for calculation of N-emissions
+#  set negative pH to read from file!
+SOIL_PH = 6.
+
+
+
+#*******************************************************************************
+# Forestry module
+#*******************************************************************************
+
+########forestry module########
+hsim_name=hsim6000.csv 
+fake=n 
+output_file_name=yt70.csv 
+id=70 
+lat=48.4 
+long=2.7
+# What kind of management? 0= Orchidee standard, 1= self-thinning only, 2= high-stand, 3= coppices, 4 (added by VB 09/2010)
+# TANKUN note: management need to choose, I chose 3 before, but results seems wrong)
+
+# Initial tree density (if < 10, filled with default pft values)
+nmaxtrees=10000 #0
+# Irrigation
+irrig=n 
+# Force volume increase with extrenal data?
+force_inc=n
+force_init=n
+force_file=none
+nforc_years=0
+nforc_pts=0
+# Is the forestry module talkative?
+bav_f=1
+# Number of proc used
+nb_proc=1
+# Numero du proc
+proc_no=0
+# 0= nothing, 1 = revert to orch-std when density gets below minimal threshold, 2 = clearcut when density gets below minimal threshold
+early_cut=0
+#Sensitivity analysis parameters
+ss_pipe_density=1
+ss_selfth_curve=1
+ss_sigma=1
+ss_rdi_target=1
+ss_delta_rdi=1
+ss_psi=1
+ss_th_strat=1
+ss_tau_spread=1
+ss_lambda=1
+ss_branch_ratio=1
+ss_branch_turn=1
+ss_circ_bm=1
+ss_height_circ=1
+ss_dens_init=1
+ss_min_circ_init=1
+ss_p_max=1
+ss_decl_max=1
+# Optimisation factors for vmax
+opt_factor_4=1
+opt_factor_6=1
+opt_factor_7=1
+opt_factor_8=1
+opt_factor_9=1
+#Height-related increase in fine roots? 1 if yes, 0 if no
+aging_roots=0
+# Default rotation length
+# Itinerary of SRC: 1 = Popface, 2 = Orsay
+itinerary=1
+# Time step at which irrigation stops in seconds (0 = never stops, Orsay : 5 years = 157680000
+end_ir=0
+# Is the stand a plantation? If yes, lai is allowed to reach lai_max after 10 years, not 10 m
+plantation4=n
+plantation6=n
+# Use new allocation?
+new_alloc=n
+HYDROL_CWRR=n 
+# Begin by clearing all ab biomass but the newly planted trees?
+# TANKUN note: choose y at the beginning year of the forest
+
+#read population density or not
+#population density file
+
+#force Burned area?
+#Burned area map; the variable name for Burned area must be 'ba'
+BA_FILE=/home/bnordgren/orchidee_data/FIRE_DATA/GFED3/monthly/BA2009.nc
+
+
+#lightning file
+LIGHTNING_FILE= /home/bnordgren/orchidee_data/USDATA/LISOTD_HRMC_V2.3.2011.lightn.nc
+
+#gpp forcing file
+#GPPFILENAME=/home/orchidee01/ychao/GPP_DATA/CA-NS1_4490.txt
+
+#age_stand
+AGE_STAND=10
+
+#force_co2 used for carbonxylation.
+FORCE_CO2=285.23703
+LIMIT_WEST=-180.0 
+LIMIT_EAST=-40.0 
+LIMIT_SOUTH=20.0 
+LIMIT_NORTH=80.0 
+SPLIT_DT=12 
+IMPOSE_VEG=n 
+LAND_USE=n 
+VEGET_YEAR=0 
+ALLOW_WEATHERGEN=n 
+STOMATE_FOREST_MANAGED16=0 
+clearfirst=n 
+fireevent=n 
+age_target_def=180 
+RESTART_FILEOUT=driver_restart.nc 
+SECHIBA_rest_out=sechiba_restart.nc 
+STOMATE_RESTART_FILEOUT=stomate_restart.nc 
+SECHIBA_HISTLEVEL=4 
+WRITE_STEP=31536000 
+STOMATE_HISTLEVEL=5 
+STOMATE_HIST_DT=365 
+OUTPUT_FILE=sechiba_history.nc 
+STOMATE_OUTPUT_FILE=stomate_history.nc 
+SECHIBA_reset_time=y 
+STOMATE_FORCING_NAME=NONE 
+FORCING_RAD_CENTER=y 
+READ_OBSERVED_BA=n 
+TIME_LENGTH=1Y 
+STOMATE_CFORCING_NAME=NONE 
+FIRE_DISABLE=y 
+READ_POPDENS=n 
+RESTART_FILEIN=driver_start.nc 
+SECHIBA_restart_in=sechiba_start.nc 
+STOMATE_RESTART_FILEIN=stomate_start.nc 
+POPDENS_FILE=/home/bnordgren/orchidee_data/USDATA/popdens_1850.nc 
+FORCING_FILE=/home/bnordgren/orchidee_data/CRUNCEP/cruncep_halfdeg_1930.nc 
+ATM_CO2=285.23703 
+READ_CF_COARSE=n
+CF_COARSE_FILE=/home/orchidee01/ychao/FIRE_DATA/GFED3/CF_coarse.nc
+READ_CF_FINE=n
+CF_FINE_FILE=/home/orchidee01/ychao/FIRE_DATA/GFED3/CF_fine.nc
+READ_RATIO=n
+RATIO_FILE=/home/bnordgren/orchidee_data/USDATA/ratio_ones.nc
+READ_RATIO_FLAG=n
+RATIO_FLAG_FILE=/home/bnordgren/orchidee_data/USDATA/flag_minus_ones.nc
