@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cpunum=72
+cpunum=64
+spinup=1
 
 ####----MSUB -p 6328
 
@@ -38,8 +39,8 @@ FORFILE=/home/bnordgren/orchidee_data/SPINUP_FORCING
 
 TIME=1                  #timelength of the forcing file
 UNIT=Y                  #unit of TIME
-FORCE_YEAR_FINAL_BEGIN=1600
-RUN_FINAL_YEAR=1601  #the year itself included
+FORCE_YEAR_FINAL_BEGIN=1679
+RUN_FINAL_YEAR=1900  #the year itself included
 
 ## RESTART FILES
 moteur_dem=driver_start.nc
@@ -50,12 +51,12 @@ stomate_dem=stomate_start.nc
 stomate_redem=stomate_restart.nc
 
 ## Output level and frequency
-sechistlev=4
+sechistlev=1
 sechistdt_year=31536000 # unit in seconds; 86400 for daily; 2592000 for monthly; 31536000 for yearly
 sechistdt_month=2592000 #daily
 sechistdt_day=86400 #daily
 
-stohistlev=4
+stohistlev=1
 stohistdt_year=365
 stohistdt_day=1 #STOMATE history timestep(d)
 
@@ -91,11 +92,16 @@ cd ${OUTLOC}
   fi
 
   cp /home/bnordgren/orchidee_data/SPINUP/run.def.template run.def
-  remplace RESTART_FILEIN NONE
-  remplace SECHIBA_restart_in NONE
-  remplace STOMATE_RESTART_FILEIN NONE
+  remplace RESTART_FILEIN $moteur_dem
+  remplace SECHIBA_restart_in $sechiba_dem
+  remplace STOMATE_RESTART_FILEIN $stomate_dem
+#  remplace RESTART_FILEIN NONE
+#  remplace SECHIBA_restart_in NONE
+#  remplace STOMATE_RESTART_FILEIN NONE
 
+  remplace ORCHIDEE_WATCHOUT n
   remplace WRITE_STEP $sechistdt_year           #write step for sechiba(in seconds)
+  remplace SECHIBA_HISTLEVEL $sechistlev
   remplace STOMATE_HISTLEVEL $stohistlev
   remplace STOMATE_HIST_DT $stohistdt_day      #write step for stomate(in days)
   remplace LIMIT_WEST -180
@@ -135,6 +141,7 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     CO2=$(awk "(\$1 == ${CO2_YEAR}) {print \$2}" ${CO2FILE} )
     remplace ATM_CO2 $CO2
 
+
     echo spin up $i of $IITER4 : $CO2 ${CO2_YEAR} using FORCEFILE OF ${FORCE_FILE} 
     
     cp run.def ${DIR_RUN}/run.def.${FORCE_YEAR}
@@ -142,28 +149,41 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     #./orchidee.e > out_orchidee.txt
     qsub -pe orte ${cpunum} -sync yes -cwd -S /bin/bash -j yes \
 	-o out_orchidee.txt \
-	-l 'hostname=compute-0-8|compute-0-9|compute-0-10|compute-0-11|compute-0-12|compute-0-14|compute-0-15|compute-0-16|compute-0-17' \
+	-l 'hostname=compute-0-0|compute-0-1|compute-0-2|compute-0-3|compute-0-5|compute-0-6|compute-0-7|compute-0-8|compute-0-9|compute-0-10|compute-0-11|compute-0-12|compute-0-13|compute-0-14|compute-0-15|compute-0-16|compute-0-17' \
 	./submit_script.sh
-    #ccc_mprun -n ${cpunum} ./orchidee.e > out_orchidee.txt
-    i_proc=0
-    while [ ${i_proc} -lt ${cpunum} ] ; do
-      i_proc_4dit=$(printf "%0.4d" ${i_proc})
-      mv -f sechiba_history_${i_proc_4dit}.nc ${DIR_RUN}/sechiba_history_${i_proc_4dit}_${FORCE_YEAR}.nc	
-      mv -f stomate_history_${i_proc_4dit}.nc ${DIR_RUN}/stomate_history_${i_proc_4dit}_${FORCE_YEAR}.nc	
-      mv out_orchidee_${i_proc_4dit} ${DIR_RUN}/out_orchidee_${i_proc_4dit}_${FORCE_YEAR}.txt
-      let i_proc=i_proc+1
-    done
+    # don't save the history files if we're just spinning up.
+    if [ ${spinup} -eq 1 ] ; then 
+      rm -f sechiba_history_????.nc stomate_history_????.nc out_orchidee_????
+    else 
+      i_proc=0
+      while [ ${i_proc} -lt ${cpunum} ] ; do
+        i_proc_4dit=$(printf "%0.4d" ${i_proc})
+        mv -f sechiba_history_${i_proc_4dit}.nc ${DIR_RUN}/sechiba_history_${i_proc_4dit}_${FORCE_YEAR}.nc	
+        mv -f stomate_history_${i_proc_4dit}.nc ${DIR_RUN}/stomate_history_${i_proc_4dit}_${FORCE_YEAR}.nc	
+        mv out_orchidee_${i_proc_4dit} ${DIR_RUN}/out_orchidee_${i_proc_4dit}_${FORCE_YEAR}.txt
+        let i_proc=i_proc+1
+      done
+    fi
 
+    # always save the "out" files 
     mv out_orchidee.txt ${DIR_RUN}/out_orchidee_${FORCE_YEAR}.txt 
+
+    # only save a copy of the restart files if we're not spinning up
     cp driver_restart.nc ${DIR_RUN}/driver_restart_${FORCE_YEAR}.nc
     cp sechiba_restart.nc ${DIR_RUN}/sechiba_restart_${FORCE_YEAR}.nc
     cp stomate_restart.nc ${DIR_RUN}/stomate_restart_${FORCE_YEAR}.nc
-#    mv stomate_history.nc ${DIR_RUN}/stomate_history_${FORCE_YEAR}.nc
-#    mv sechiba_history.nc ${DIR_RUN}/sechiba_history_${FORCE_YEAR}.nc
+
+    # only save ten years of restart files....
+    if [ ${spinup} -eq 1 ] ; then 
+      let TRAIL_YEAR=${FORCE_YEAR}-50
+      rm -f ${DIR_RUN}/driver_restart_${TRAIL_YEAR}.nc
+      rm -f ${DIR_RUN}/sechiba_restart_${TRAIL_YEAR}.nc
+      rm -f ${DIR_RUN}/stomate_restart_${TRAIL_YEAR}.nc
+    fi
+    echo Completed run for ${FORCE_YEAR} >> run.log
   
     let i=i+1
     let iout=iout+1
-    let CO2_YEAR=CO2_YEAR+1
     let FORCE_YEAR=FORCE_YEAR+1      
 
      

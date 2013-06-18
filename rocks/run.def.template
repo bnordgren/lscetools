@@ -435,6 +435,9 @@ STOMATE_OK_WATCHOUT=n
 
 # DGVM active
 # Active la vegetation dynamique
+#
+# Active DGVM
+# Enable dynamic vegetation
 STOMATE_OK_DGVM = n 
 
 
@@ -474,6 +477,15 @@ FORCING_C13_MONTHLY = y
 #  sur un seul point. Sur le globe, cela n'a pas de sens d'imposer la meme vegetation partout.
 # Modif pour forestry ???
 
+# ************************************************* ***************************************
+# Parameters describing the surface (soil + vegetation)
+# ************************************************* ***************************************
+#
+# The vegetation should it be imposed?
+# This option allows you to impose the distribution of vegetation when working
+# On a single point. On the globe, it does not make sense to impose the same vegetation everywhere.
+# Change to forestry??
+
 
 # A enlever du code !!! calcul impose par la lai (cf slowproc_veget) et veget_max
 #  Parametres prescrits pour la vegetation dans les cas 0-dim.
@@ -481,6 +493,13 @@ FORCING_C13_MONTHLY = y
 #  par ces valeurs.
 #  Fraction de VEGET_MAX (parametre par la LAI donc).
 #  TANKUN note: choose PFT here
+# Google Translate
+# To remove the code! calculation required by lai (see slowproc_veget) and veget_max
+# Parameters specified for the vegetation in the case 0-Sun
+# Fractional vegetation (PFTs) are read from the restart file or imposed
+# These values.
+# Fraction VEGET_MAX (LAI parameter by then).
+# TANKUN Note: PFT choose here
 SECHIBA_VEG__01 = 0.0
 SECHIBA_VEG__02 = 0.0 
 SECHIBA_VEG__03 = 0.0 
@@ -500,6 +519,10 @@ SECHIBA_VEG__13 = 0.0
 #  Les fractions maximum de vegetation (PFTs) sont lus dans le fichier de restart 
 #  ou imposees par ces valeurs.
 #  TANKUN note: choose PFT here
+#  Google translate: 
+# Parameters specified for the vegetation in the case 0-Sun
+# The maximum fractional vegetation (PFTs) are read from the file restart
+# Or imposed by these values...
 SECHIBA_VEGMAX__01 = 0.0
 SECHIBA_VEGMAX__02 = 0.0
 SECHIBA_VEGMAX__03 = 0.0
