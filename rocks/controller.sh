@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cpunum=64
-spinup=1
+spinup=0
 
 ####----MSUB -p 6328
 
@@ -16,9 +16,9 @@ spinup=1
 ## LOCATIONS OF FILES 
 BINDIR_A5F=/home/bnordgren/orchidee/modipsl/bin
 BINFILE=orchidee_ol	#executable name
-FIREDIR=/home/bnordgren/orchidee_data/USDATA    #data for lightning and population density
-OUTLOC=/home/bnordgren/orchidee_data/SPINUP	#where files are to be saved
-CO2FILE=/home/bnordgren/orchidee_data/SPINUP_FORCING/co2year.dat
+FIREDIR=/share/orchidee1/orchidee_data/USDATA    #data for lightning and population density
+OUTLOC=/share/orchidee1/orchidee_data/Eurasia	#where files are to be saved
+CO2FILE=/share/orchidee1/orchidee_data/SPINUP_FORCING/co2year.dat
 DIR_RUN=${OUTLOC}/RUN
 
 ## ===========================================
@@ -35,12 +35,12 @@ LOOPNO_ORCHIDEE3=0 #70; long_name: LOOP NUMBER ORCHIDEE (THE 3 LOOP FOR ONLY ORC
 let FORCESOIL_NO=${LOOPNO_FORCESOIL2}
 
 ## Forcing
-FORFILE=/home/bnordgren/orchidee_data/SPINUP_FORCING
+FORFILE=/share/orchidee1/orchidee_data/SPINUP_FORCING
 
 TIME=1                  #timelength of the forcing file
 UNIT=Y                  #unit of TIME
-FORCE_YEAR_FINAL_BEGIN=1679
-RUN_FINAL_YEAR=1900  #the year itself included
+FORCE_YEAR_FINAL_BEGIN=2002
+RUN_FINAL_YEAR=2004
 
 ## RESTART FILES
 moteur_dem=driver_start.nc
@@ -51,12 +51,12 @@ stomate_dem=stomate_start.nc
 stomate_redem=stomate_restart.nc
 
 ## Output level and frequency
-sechistlev=1
+sechistlev=5
 sechistdt_year=31536000 # unit in seconds; 86400 for daily; 2592000 for monthly; 31536000 for yearly
 sechistdt_month=2592000 #daily
 sechistdt_day=86400 #daily
 
-stohistlev=1
+stohistlev=5
 stohistdt_year=365
 stohistdt_day=1 #STOMATE history timestep(d)
 
@@ -64,7 +64,7 @@ stohistdt_day=1 #STOMATE history timestep(d)
 ## Function to change the run.def
 remplace()
 {
-sed -i "/$1/c$1=$2" run.def
+sed -i "/^$1/c$1=$2" run.def
 }
 
 ## Displaying Information 
@@ -100,14 +100,15 @@ cd ${OUTLOC}
 #  remplace STOMATE_RESTART_FILEIN NONE
 
   remplace ORCHIDEE_WATCHOUT n
+  remplace FIRE_DISABLE n
   remplace WRITE_STEP $sechistdt_year           #write step for sechiba(in seconds)
   remplace SECHIBA_HISTLEVEL $sechistlev
   remplace STOMATE_HISTLEVEL $stohistlev
   remplace STOMATE_HIST_DT $stohistdt_day      #write step for stomate(in days)
-  remplace LIMIT_WEST -180
+  remplace LIMIT_WEST -15
   remplace LIMIT_EAST 180
-  remplace LIMIT_SOUTH -90
-  remplace LIMIT_NORTH 90
+  remplace LIMIT_SOUTH 30
+  remplace LIMIT_NORTH 80
 
 
   let i=1
@@ -130,11 +131,11 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     remplace POPDENS_FILE ${FIREDIR}/popdens_${FORCE_YEAR}.nc 
     FORCE_FILE=${FORFILE}/cruncep_halfdeg_${FORCE_YEAR}.nc 
 
-    remplace CF_COARSE_FILE /home/bnordgren/orchidee_data/USDATA/CF_coarse.nc
-    remplace CF_FINE_FILE /home/bnordgren/orchidee_data/USDATA/CF_fine.nc
+    remplace CF_COARSE_FILE /share/orchidee1/orchidee_data/USDATA/CF_coarse.nc
+    remplace CF_FINE_FILE /share/orchidee1/orchidee_data/USDATA/CF_fine.nc
     remplace READ_OBSERVED_BA n
-    remplace RATIO_FILE /home/bnordgren/orchidee_data/USDATA/ratio_ones.nc
-    remplace RATIO_FLAG_FILE /home/bnordgren/orchidee_data/USDATA/flag_minus_ones.nc
+    remplace RATIO_FILE /share/orchidee1/orchidee_data/USDATA/ratio_ones.nc
+    remplace RATIO_FLAG_FILE /share/orchidee1/orchidee_data/USDATA/flag_minus_ones.nc
 
     remplace FORCING_FILE ${FORCE_FILE}
     let CO2_YEAR=$(if test $FORCE_YEAR -lt 1850 ; then echo 1850 ; else echo ${FORCE_YEAR} ; fi )
@@ -142,14 +143,13 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     remplace ATM_CO2 $CO2
 
 
-    echo spin up $i of $IITER4 : $CO2 ${CO2_YEAR} using FORCEFILE OF ${FORCE_FILE} 
+    echo Iteration $i of $IITER4 : $CO2 ${CO2_YEAR} using FORCEFILE OF ${FORCE_FILE} 
     
     cp run.def ${DIR_RUN}/run.def.${FORCE_YEAR}
 
     #./orchidee.e > out_orchidee.txt
     qsub -pe orte ${cpunum} -sync yes -cwd -S /bin/bash -j yes \
 	-o out_orchidee.txt \
-	-l 'hostname=compute-0-0|compute-0-1|compute-0-2|compute-0-3|compute-0-5|compute-0-6|compute-0-7|compute-0-8|compute-0-9|compute-0-10|compute-0-11|compute-0-12|compute-0-13|compute-0-14|compute-0-15|compute-0-16|compute-0-17' \
 	./submit_script.sh
     # don't save the history files if we're just spinning up.
     if [ ${spinup} -eq 1 ] ; then 
@@ -168,7 +168,7 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     # always save the "out" files 
     mv out_orchidee.txt ${DIR_RUN}/out_orchidee_${FORCE_YEAR}.txt 
 
-    # only save a copy of the restart files if we're not spinning up
+    # save a copy of the restart files 
     cp driver_restart.nc ${DIR_RUN}/driver_restart_${FORCE_YEAR}.nc
     cp sechiba_restart.nc ${DIR_RUN}/sechiba_restart_${FORCE_YEAR}.nc
     cp stomate_restart.nc ${DIR_RUN}/stomate_restart_${FORCE_YEAR}.nc
