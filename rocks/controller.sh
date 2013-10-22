@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cpunum=64
-spinup=0
+cpunum=56
+spinup=1
 
 ####----MSUB -p 6328
 
@@ -16,9 +16,9 @@ spinup=0
 ## LOCATIONS OF FILES 
 BINDIR_A5F=/home/bnordgren/orchidee/modipsl/bin
 BINFILE=orchidee_ol	#executable name
-FIREDIR=/share/orchidee1/orchidee_data/USDATA    #data for lightning and population density
-OUTLOC=/share/orchidee1/orchidee_data/Eurasia	#where files are to be saved
-CO2FILE=/share/orchidee1/orchidee_data/SPINUP_FORCING/co2year.dat
+FIREDIR=/home/bnordgren/orchidee_data/USDATA    #data for lightning and population density
+OUTLOC=/home/bnordgren/orchidee_data/SPINUP	#where files are to be saved
+CO2FILE=${FIREDIR}/co2year.dat
 DIR_RUN=${OUTLOC}/RUN
 
 ## ===========================================
@@ -35,20 +35,20 @@ LOOPNO_ORCHIDEE3=0 #70; long_name: LOOP NUMBER ORCHIDEE (THE 3 LOOP FOR ONLY ORC
 let FORCESOIL_NO=${LOOPNO_FORCESOIL2}
 
 ## Forcing
-FORFILE=/share/orchidee1/orchidee_data/SPINUP_FORCING
+FORFILE=/home/bnordgren/orchidee_data/SPINUP_FORCING
 
 TIME=1                  #timelength of the forcing file
 UNIT=Y                  #unit of TIME
-FORCE_YEAR_FINAL_BEGIN=2002
-RUN_FINAL_YEAR=2004
+FORCE_YEAR_FINAL_BEGIN=1841
+RUN_FINAL_YEAR=1999
 
 ## RESTART FILES
-moteur_dem=driver_start.nc
-moteur_redem=driver_restart.nc
-sechiba_dem=sechiba_start.nc
-sechiba_redem=sechiba_restart.nc
-stomate_dem=stomate_start.nc
-stomate_redem=stomate_restart.nc
+moteur_dem=$OUTLOC/driver_start.nc
+moteur_redem=$OUTLOC/driver_restart.nc
+sechiba_dem=$OUTLOC/sechiba_start.nc
+sechiba_redem=$OUTLOC/sechiba_restart.nc
+stomate_dem=$OUTLOC/stomate_start.nc
+stomate_redem=$OUTLOC/stomate_restart.nc
 
 ## Output level and frequency
 sechistlev=5
@@ -92,6 +92,9 @@ cd ${OUTLOC}
   fi
 
   cp /home/bnordgren/orchidee_data/SPINUP/run.def.template run.def
+  remplace RESTART_FILEOUT $moteur_redem
+  remplace SECHIBA_rest_out $sechiba_redem
+  remplace STOMATE_RESTART_FILEOUT $stomate_redem
   remplace RESTART_FILEIN $moteur_dem
   remplace SECHIBA_restart_in $sechiba_dem
   remplace STOMATE_RESTART_FILEIN $stomate_dem
@@ -99,8 +102,10 @@ cd ${OUTLOC}
 #  remplace SECHIBA_restart_in NONE
 #  remplace STOMATE_RESTART_FILEIN NONE
 
+  remplace READ_POPDENS y
+  remplace POPDENS_FILE ${FIREDIR}/popdens_2000.nc 
   remplace ORCHIDEE_WATCHOUT n
-  remplace FIRE_DISABLE n
+  remplace FIRE_DISABLE y
   remplace WRITE_STEP $sechistdt_year           #write step for sechiba(in seconds)
   remplace SECHIBA_HISTLEVEL $sechistlev
   remplace STOMATE_HISTLEVEL $stohistlev
@@ -128,14 +133,14 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
       remplace SECHIBA_restart_in $sechiba_dem
       remplace STOMATE_RESTART_FILEIN $stomate_dem
     fi
-    remplace POPDENS_FILE ${FIREDIR}/popdens_${FORCE_YEAR}.nc 
+#    remplace POPDENS_FILE ${FIREDIR}/popdens_${FORCE_YEAR}.nc 
     FORCE_FILE=${FORFILE}/cruncep_halfdeg_${FORCE_YEAR}.nc 
 
-    remplace CF_COARSE_FILE /share/orchidee1/orchidee_data/USDATA/CF_coarse.nc
-    remplace CF_FINE_FILE /share/orchidee1/orchidee_data/USDATA/CF_fine.nc
+    remplace CF_COARSE_FILE ${FIREDIR}/CF_coarse.nc
+    remplace CF_FINE_FILE ${FIREDIR}/CF_fine.nc
     remplace READ_OBSERVED_BA n
-    remplace RATIO_FILE /share/orchidee1/orchidee_data/USDATA/ratio_ones.nc
-    remplace RATIO_FLAG_FILE /share/orchidee1/orchidee_data/USDATA/flag_minus_ones.nc
+    remplace RATIO_FILE ${FIREDIR}/ratio_ones.nc
+    remplace RATIO_FLAG_FILE ${FIREDIR}/flag_minus_ones.nc
 
     remplace FORCING_FILE ${FORCE_FILE}
     let CO2_YEAR=$(if test $FORCE_YEAR -lt 1850 ; then echo 1850 ; else echo ${FORCE_YEAR} ; fi )
@@ -174,12 +179,12 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
     cp stomate_restart.nc ${DIR_RUN}/stomate_restart_${FORCE_YEAR}.nc
 
     # only save ten years of restart files....
-    if [ ${spinup} -eq 1 ] ; then 
-      let TRAIL_YEAR=${FORCE_YEAR}-50
-      rm -f ${DIR_RUN}/driver_restart_${TRAIL_YEAR}.nc
-      rm -f ${DIR_RUN}/sechiba_restart_${TRAIL_YEAR}.nc
-      rm -f ${DIR_RUN}/stomate_restart_${TRAIL_YEAR}.nc
-    fi
+#    if [ ${spinup} -eq 1 ] ; then 
+#      let TRAIL_YEAR=${FORCE_YEAR}-100
+#      rm -f ${DIR_RUN}/driver_restart_${TRAIL_YEAR}.nc
+#      rm -f ${DIR_RUN}/sechiba_restart_${TRAIL_YEAR}.nc
+#      rm -f ${DIR_RUN}/stomate_restart_${TRAIL_YEAR}.nc
+#    fi
     echo Completed run for ${FORCE_YEAR} >> run.log
   
     let i=i+1
