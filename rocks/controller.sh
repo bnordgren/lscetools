@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cpunum=56
-spinup=1
+cpunum=64
+spinup=0
 
 ####----MSUB -p 6328
 
@@ -14,10 +14,10 @@ spinup=1
 
 
 ## LOCATIONS OF FILES 
-BINDIR_A5F=/home/bnordgren/orchidee/modipsl/bin
+BINDIR_A5F=/share/orchidee/source/TRUNK_SPITFIRE/modipsl/bin
 BINFILE=orchidee_ol	#executable name
-FIREDIR=/home/bnordgren/orchidee_data/USDATA    #data for lightning and population density
-OUTLOC=/home/bnordgren/orchidee_data/SPINUP	#where files are to be saved
+FIREDIR=/share/orchidee/orchidee_data/USDATA    #data for lightning and population density
+OUTLOC=/share/orchidee/orchidee_data/Eurasia_test	#where files are to be saved
 CO2FILE=${FIREDIR}/co2year.dat
 DIR_RUN=${OUTLOC}/RUN
 
@@ -35,12 +35,12 @@ LOOPNO_ORCHIDEE3=0 #70; long_name: LOOP NUMBER ORCHIDEE (THE 3 LOOP FOR ONLY ORC
 let FORCESOIL_NO=${LOOPNO_FORCESOIL2}
 
 ## Forcing
-FORFILE=/home/bnordgren/orchidee_data/SPINUP_FORCING
+FORFILE=/share/orchidee/orchidee_data/SPINUP_FORCING
 
 TIME=1                  #timelength of the forcing file
 UNIT=Y                  #unit of TIME
-FORCE_YEAR_FINAL_BEGIN=1841
-RUN_FINAL_YEAR=1999
+FORCE_YEAR_FINAL_BEGIN=2000
+RUN_FINAL_YEAR=2010
 
 ## RESTART FILES
 moteur_dem=$OUTLOC/driver_start.nc
@@ -91,7 +91,7 @@ cd ${OUTLOC}
     mkdir -p ${DIR_RUN}
   fi
 
-  cp /home/bnordgren/orchidee_data/SPINUP/run.def.template run.def
+  cp ${OUTLOC}/run.def.template run.def
   remplace RESTART_FILEOUT $moteur_redem
   remplace SECHIBA_rest_out $sechiba_redem
   remplace STOMATE_RESTART_FILEOUT $stomate_redem
@@ -105,7 +105,7 @@ cd ${OUTLOC}
   remplace READ_POPDENS y
   remplace POPDENS_FILE ${FIREDIR}/popdens_2000.nc 
   remplace ORCHIDEE_WATCHOUT n
-  remplace FIRE_DISABLE y
+  remplace FIRE_DISABLE n
   remplace WRITE_STEP $sechistdt_year           #write step for sechiba(in seconds)
   remplace SECHIBA_HISTLEVEL $sechistlev
   remplace STOMATE_HISTLEVEL $stohistlev

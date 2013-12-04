@@ -44,14 +44,14 @@ ALMA_OUTPUT = n
 #  Habituelleemnt, SECHIBA tourne avec une carte 5km x 5km qui vient de celle de IGBP.
 #  On suppose que l'on a une classification de 87 types de vegetation.
 #  C'est celle de Olson modifiee par Viovy.
-VEGETATION_FILE = /home/bnordgren/orchidee_data/USDATA/carteveg5km.nc
+VEGETATION_FILE = /share/orchidee/orchidee_data/USDATA/carteveg5km.nc
 
 # Nom du fichier de l'albedo sur sol nu.
 #  Si !IMPOSE_AZE
 #  Ce fichier sert a la lecture des types de sol desquels on tire les albedos sur sol nu.
 #  Ce fichier est precis au 1x1 degres et base sur les couleurs de sol definies par Wilson
 #  et Henderson.
-SOILCLASS_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
+SOILCLASS_FILE = /share/orchidee/orchidee_data/USDATA/soils_param.nc
 
 
 # Nom du fichier de types de sol
@@ -59,7 +59,7 @@ SOILCLASS_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
 #  fichier seront interpollees sur la grille du modele. Le but est d'obtenir les fractions
 #  de 'sand loam' et de 'clay' pour chaque boite de la grille. Cette information est utilisee
 #  pour l'hydrologie du sol et la respiration.
-SOILALB_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
+SOILALB_FILE = /share/orchidee/orchidee_data/USDATA/soils_param.nc
 
 
 # Nom du fichier de reference de temperature
@@ -68,7 +68,7 @@ SOILALB_FILE = /home/bnordgren/orchidee_data/USDATA/soils_param.nc
 #  les variables de pronostique correspondantes du modele correctement (ok_dgvm = TRUE), que 
 #  de l'imposer comme une condition aux limite (ok_dgvm = FALSE).
 #REFTEMP_FILE = /home/data02/cbacour/ORCHIDEE/forcage/reftemp.nc
-REFTEMP_FILE = /home/bnordgren/orchidee_data/USDATA/reftemp.nc
+REFTEMP_FILE = /share/orchidee/orchidee_data/USDATA/reftemp.nc
 
 # Nom du fichier de forcage
 #  Permet de lire les donnees pour le modele dim0. Le format de ce fichier est compatible avec
@@ -435,9 +435,6 @@ STOMATE_OK_WATCHOUT=n
 
 # DGVM active
 # Active la vegetation dynamique
-#
-# Active DGVM
-# Enable dynamic vegetation
 STOMATE_OK_DGVM = n 
 
 
@@ -477,15 +474,6 @@ FORCING_C13_MONTHLY = y
 #  sur un seul point. Sur le globe, cela n'a pas de sens d'imposer la meme vegetation partout.
 # Modif pour forestry ???
 
-# ************************************************* ***************************************
-# Parameters describing the surface (soil + vegetation)
-# ************************************************* ***************************************
-#
-# The vegetation should it be imposed?
-# This option allows you to impose the distribution of vegetation when working
-# On a single point. On the globe, it does not make sense to impose the same vegetation everywhere.
-# Change to forestry??
-
 
 # A enlever du code !!! calcul impose par la lai (cf slowproc_veget) et veget_max
 #  Parametres prescrits pour la vegetation dans les cas 0-dim.
@@ -493,13 +481,6 @@ FORCING_C13_MONTHLY = y
 #  par ces valeurs.
 #  Fraction de VEGET_MAX (parametre par la LAI donc).
 #  TANKUN note: choose PFT here
-# Google Translate
-# To remove the code! calculation required by lai (see slowproc_veget) and veget_max
-# Parameters specified for the vegetation in the case 0-Sun
-# Fractional vegetation (PFTs) are read from the restart file or imposed
-# These values.
-# Fraction VEGET_MAX (LAI parameter by then).
-# TANKUN Note: PFT choose here
 SECHIBA_VEG__01 = 0.0
 SECHIBA_VEG__02 = 0.0 
 SECHIBA_VEG__03 = 0.0 
@@ -519,10 +500,6 @@ SECHIBA_VEG__13 = 0.0
 #  Les fractions maximum de vegetation (PFTs) sont lus dans le fichier de restart 
 #  ou imposees par ces valeurs.
 #  TANKUN note: choose PFT here
-#  Google translate: 
-# Parameters specified for the vegetation in the case 0-Sun
-# The maximum fractional vegetation (PFTs) are read from the file restart
-# Or imposed by these values...
 SECHIBA_VEGMAX__01 = 0.0
 SECHIBA_VEGMAX__02 = 0.0
 SECHIBA_VEGMAX__03 = 0.0
@@ -1033,11 +1010,11 @@ HYDROL_CWRR=n
 
 #force Burned area?
 #Burned area map; the variable name for Burned area must be 'ba'
-BA_FILE=/home/bnordgren/orchidee_data/FIRE_DATA/GFED3/monthly/BA2009.nc
+BA_FILE=/share/orchidee/orchidee_data/FIRE_DATA/GFED3/monthly/BA2009.nc
 
 
 #lightning file
-LIGHTNING_FILE= /home/bnordgren/orchidee_data/USDATA/LISOTD_HRMC_V2.3.2011.lightn.nc
+LIGHTNING_FILE= /share/orchidee/orchidee_data/USDATA/LISOTD_HRMC_V2.3.2011.lightn.nc
 
 #gpp forcing file
 #GPPFILENAME=/home/orchidee01/ychao/GPP_DATA/CA-NS1_4490.txt
@@ -1047,6 +1024,9 @@ AGE_STAND=10
 
 #force_co2 used for carbonxylation.
 FORCE_CO2=285.23703
+
+READ_HUMIGN=y
+HUMIGN_FILE=/share/orchidee/orchidee_data/USDATA/humign.nc
 LIMIT_WEST=-180.0 
 LIMIT_EAST=-40.0 
 LIMIT_SOUTH=20.0 
@@ -1080,14 +1060,14 @@ READ_POPDENS=n
 RESTART_FILEIN=driver_start.nc 
 SECHIBA_restart_in=sechiba_start.nc 
 STOMATE_RESTART_FILEIN=stomate_start.nc 
-POPDENS_FILE=/home/bnordgren/orchidee_data/USDATA/popdens_1850.nc 
-FORCING_FILE=/home/bnordgren/orchidee_data/CRUNCEP/cruncep_halfdeg_1930.nc 
+POPDENS_FILE=/share/orchidee/orchidee_data/USDATA/popdens_1850.nc 
+FORCING_FILE=/share/orchidee/orchidee_data/CRUNCEP/cruncep_halfdeg_1930.nc 
 ATM_CO2=285.23703 
 READ_CF_COARSE=n
 CF_COARSE_FILE=/home/orchidee01/ychao/FIRE_DATA/GFED3/CF_coarse.nc
 READ_CF_FINE=n
 CF_FINE_FILE=/home/orchidee01/ychao/FIRE_DATA/GFED3/CF_fine.nc
 READ_RATIO=n
-RATIO_FILE=/home/bnordgren/orchidee_data/USDATA/ratio_ones.nc
+RATIO_FILE=/share/orchidee/orchidee_data/USDATA/ratio_ones.nc
 READ_RATIO_FLAG=n
-RATIO_FLAG_FILE=/home/bnordgren/orchidee_data/USDATA/flag_minus_ones.nc
+RATIO_FLAG_FILE=/share/orchidee/orchidee_data/USDATA/flag_minus_ones.nc
