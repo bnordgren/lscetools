@@ -64,7 +64,7 @@ stohistdt_day=1 #STOMATE history timestep(d)
 ## Function to change the run.def
 remplace()
 {
-sed -i "/^$1/c$1=$2" run.def
+sed -i "/^$1=/c$1=$2" run.def
 }
 
 ## Displaying Information 
@@ -115,6 +115,18 @@ cd ${OUTLOC}
   remplace LIMIT_SOUTH 30
   remplace LIMIT_NORTH 80
 
+  # combustion fraction inputs
+  remplace CF_COARSE_FILE ${FIREDIR}/CF_coarse.nc
+  remplace CF_FINE_FILE ${FIREDIR}/CF_fine.nc
+
+  # observed burned area
+  remplace READ_OBSERVED_BA n
+
+  # must be 'y' if fire module enabled (...and file must be provided).
+  remplace READ_RATIO y
+  remplace READ_RATIO_FLAG y 
+  remplace RATIO_FILE ${FIREDIR}/ratio_ones.nc
+  remplace RATIO_FLAG_FILE ${FIREDIR}/flag_minus_ones.nc
 
   let i=1
   let FORCE_YEAR=${FORCE_YEAR_FINAL_BEGIN}
@@ -136,11 +148,6 @@ while [ ${FORCE_YEAR} -le ${RUN_FINAL_YEAR} ] ; do
 #    remplace POPDENS_FILE ${FIREDIR}/popdens_${FORCE_YEAR}.nc 
     FORCE_FILE=${FORFILE}/cruncep_halfdeg_${FORCE_YEAR}.nc 
 
-    remplace CF_COARSE_FILE ${FIREDIR}/CF_coarse.nc
-    remplace CF_FINE_FILE ${FIREDIR}/CF_fine.nc
-    remplace READ_OBSERVED_BA n
-    remplace RATIO_FILE ${FIREDIR}/ratio_ones.nc
-    remplace RATIO_FLAG_FILE ${FIREDIR}/flag_minus_ones.nc
 
     remplace FORCING_FILE ${FORCE_FILE}
     let CO2_YEAR=$(if test $FORCE_YEAR -lt 1850 ; then echo 1850 ; else echo ${FORCE_YEAR} ; fi )
